@@ -1,0 +1,79 @@
+---
+title: "Build a simple DAG"
+author: "Malte Braitmaier"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Build a simple DAG}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(simple.dag)
+```
+
+This vignette shows how to build a DAG using the base R plotting commands. Example data and helper functions are provided with the simple.dag package. 
+
+## Load example data 
+
+Nodes are specified in a dara.frame. Check for instance this example dataset: 
+
+```{r}
+data(nodes) 
+nodes
+```
+
+Edges between nodes are specified in a separate data.frame. Additional graphics parameters can be specified in this data.frame (currently lwd and col): 
+
+```{r}
+data(edges) 
+edges 
+```
+
+## Pre-processing of data 
+
+In order for the DAG to look somewhat nice, the edges should not start directly on the nodes, but there should be a little buffer around them. For this, the define.arrow function can be used: 
+
+```{r}
+data(edges) 
+add.to.edges <- vector(mode = "list", length = nrow(edges))
+for (i in 1:length(add.to.edges)) {
+  add.to.edges[[i]] <- define.arrow(
+    x.0 = nodes[nodes$name == edges$from[i],"x"], 
+    y.0 = nodes[nodes$name == edges$from[i],"y"], 
+    x.1 = nodes[nodes$name == edges$to[i],"x"], 
+    y.1 = nodes[nodes$name == edges$to[i],"y"], 
+    radius = 0.2
+  )
+}
+add.to.edges <- do.call(rbind, add.to.edges)
+edges <- cbind(edges, add.to.edges)
+edges 
+```
+
+## Use basic plotting functions to build the DAG 
+
+Now use base R to plot the DAG: 
+
+```{r}
+par(mar = c(.1, .1, .1, .1))
+plot(c(-1,-1), c(1,1), ylim = c(-1.1, 1.1), xlim = c(-1.1, 1.1), 
+     axes = F, xlab = "", ylab = "", type = "n")
+text(nodes$x, nodes$y, parse(text = nodes$description))
+for (i in 1:nrow(edges)) {
+  arrows(
+    edges$x.0[i], 
+    edges$y.0[i], 
+    edges$x.1[i], 
+    edges$y.1[i], 
+    length = .1, 
+    lwd = edges$lwd[i], 
+    col = edges$col[i]
+  )
+}
+```

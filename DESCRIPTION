@@ -1,0 +1,17 @@
+Package: simple.dag
+Title: Simple functions to build DAGs while maintaining control over plotting features 
+Version: 0.01
+Authors@R: 
+    person(given = "Malte",
+           family = "Braitmaier",
+           role = c("aut", "cre"),
+           email = "braitmaier@leibniz-bips.de",
+           comment = c(ORCID = "0000-0001-7534-4068"))
+Description: This package contains functions and documentation on how to build DAGs using R base functions. There are many much more advanced packages out there (e.g. dagitty), but I find that the resulting DAGs can be frustrating to customize and much of the more advanced functions are not needed for drawing a simple graph. 
+License: `use_mit_license()`
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr
+Suggests: knitr, rmarkdown
